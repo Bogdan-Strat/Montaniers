@@ -1,0 +1,67 @@
+﻿@using Montaniarzii.BusinessLogic.Implementation.SuggestionAttractions.Models
+@model List<SuggestionAttractionFewDetailsModel>
+@{
+    ViewData["Title"] = "GetAllYourSuggestionAttraction";
+}
+
+<div>
+    @if (Model.Count == 0)
+    {
+        <div>
+            <p>You have 0 suggestions of attractions</p>
+        </div>
+    }
+    @{
+        int count = 0;
+    }
+    @foreach (var suggestion in Model)
+    {
+        count++;
+        <div id="@count">
+
+            @if (suggestion.IsAccepted == null)
+            {
+                <div>
+                    You suggest @suggestion.TypeAttraction @suggestion.AttractionName to our administration.
+                </div>
+            }
+            else
+            {
+                <div>
+                    You suggest @suggestion.TypeAttraction @suggestion.AttractionName to our administration.
+                </div>
+            }
+
+
+
+            @if (suggestion.IsAccepted == null)
+            {
+                <div>Status: In Pending</div>
+            }
+            else if (suggestion.IsAccepted == true)
+            {
+                <div>Status: Accepted</div>
+            }
+            else
+            {
+                <div>Status: Rejected</div>
+            }
+
+            <div>
+                Create Date: @suggestion.CretedDate
+                @*<button type="button" class="accept" data-tripid="@invitation.TripId" asp-route-tripId="@invitation.TripId">Accept</button>
+            <button type="button" class="decline" data-tripid="@invitation.TripId">Decline</button>*@
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+
+
+    }
+
+
+}

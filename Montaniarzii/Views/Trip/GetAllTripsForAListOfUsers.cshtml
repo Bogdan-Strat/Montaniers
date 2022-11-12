@@ -1,0 +1,57 @@
+﻿@using Montaniarzii.BusinessLogic.Implementation.Trips.Models
+@inject Montaniarzii.Common.DTOs.CurrentUserDto CurrentUser
+@model List<TripXAttractionGetAllTripsModel>
+@{
+    ViewData["Title"] = "GetAllTripsForAListOfUsers";
+}
+
+<div id="warnings-zone">
+</div>
+<div id="trending">
+    <h4>Trending</h4>
+</div>
+
+<div id="trips">
+    <h4>Recent Trips</h4>
+    @foreach (var trip in Model)
+    {
+        <div class="list-item">
+            <i class="fa-regular fa-user"></i>
+            <a asp-controller="UserAccount" asp-action="GetProfilePage" asp-route-userid="@trip.UserId"> @trip.UserNameCreator</a> has created this @trip.PostType.ToLower()
+            @if (trip.PostType == "SoloTrip       ")
+            {
+                <a asp-controller="TripXAttractions" asp-action="GetTripInformation" asp-route-tripId="@trip.TripId">@trip.AttractionsName[0] - @trip.AttractionsName[1]</a>
+            }
+            else
+            {
+                <a asp-controller="TripXAttractions" asp-action="GetEventInformation" asp-route-tripId="@trip.TripId">@trip.AttractionsName[0] - @trip.AttractionsName[1]</a>
+            }
+            <ul>
+                <li><i class="fa-regular fa-clock"></i> @trip.Duration hours</li>
+                <li><i class="fa-regular fa-calendar-days"></i> @trip.Date.ToShortDateString()</li>
+            </ul>
+            <div class="btn rounded-pill" style="align-items:center;" data-tripid="@trip.TripId">
+                <div style="display:flex;">
+                    <i class="fa-regular fa-heart like-button" style="color:red;" data-tripid="@trip.TripId"></i>
+                    <i class="fa-regular fa-comment" style="margin-left:7px;"></i>
+                </div>
+                <div class="number-of-likes" style="">
+                </div>
+            </div>
+        </div>
+    }
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+
+
+    }
+    <script>window.count = 1</script>
+    <script type="text/javascript" src="~/js/Trip/GetAllTripsForAListOfUsers.js">
+    </script>
+
+
+}
+
+

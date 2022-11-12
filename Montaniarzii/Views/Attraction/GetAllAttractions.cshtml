@@ -1,0 +1,74 @@
+﻿@using Montaniarzii.BusinessLogic.Implementation.Attractions.Models
+@model List<FewDetailsAttractionModel>
+@{
+    ViewData["Title"] = "GetAllAttractions";
+}
+
+<div class"col-md4">
+    <h4>Filters</h4>
+    <div class="form-group">
+        <label class="control-label">Attraction Name</label>
+        <input class="form-control" placeholder="Search attraction" id="search-attraction" />
+    </div>
+    <div class="form-group">
+        <label class="control-label">Mountains</label>
+        <select class="js-example-basic-multiple form-select" multiple="multiple" id="checkbox-list-mountains">
+        </select>
+    </div>
+    <div>
+        <label class="form-label">Height</label>
+        <div id="range" style="display:flex;">
+            <div id="range-value"> </div>
+            <input type="range" id="range-height" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label">Location</label>
+        <input class="form-control" placeholder="Search location" id="search-location" />
+    </div>
+</div>
+
+
+
+
+<div id="attractions" style="margin-top:20px;">
+    @foreach (var attraction in Model)
+    {
+        <div data-attractionid="@attraction.AttractionId" class="list-item">
+            <h4><a asp-controller="Attraction" asp-action="GetAttractionInformation" asp-route-attractionId="@attraction.AttractionId">@attraction.AttractionType @attraction.AttractionName</a></h4>
+            <ul>
+                @if (@attraction.Location != null)
+                {
+                    <li>Location: @attraction.Location</li>
+                }
+                else
+                {
+                    <li>Location: @attraction.AttractionName</li>
+                }
+                @if (@attraction.Height != null)
+                {
+                    <li>Height: @attraction.Height m</li>
+                }
+                @if (@attraction.Mountains != null)
+                {
+                    <li>Mountains: @attraction.Mountains</li>
+                }
+            </ul>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+
+
+    }
+    <script>
+        window.count = 1;
+    </script>
+    <script type="text/javascript" src="~/js/Attraction/GetAllAttractions.js">
+    </script>
+
+
+}

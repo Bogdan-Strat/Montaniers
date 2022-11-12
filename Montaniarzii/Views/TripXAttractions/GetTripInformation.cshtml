@@ -1,0 +1,110 @@
+﻿@using Montaniarzii.BusinessLogic.Implementation.TripsXAttractions.Models
+@model TripInformationModel
+@{
+    ViewData["Title"] = "GetTripInformation";
+}
+@{
+    Model.Attractions = Model.Attractions.OrderBy(o => o.AttractionOrderNumber).ToList();
+
+    var firstAttractionName = Model.Attractions[0].AttractionName;
+    var lastAttractionName = Model.Attractions[Model.Attractions.Count - 1].AttractionName;
+}
+<h2 class="text-primary">@firstAttractionName - @lastAttractionName </h2>
+<div>
+    <div>
+        <i class="fa-solid fa-circle-info"></i> @Model.Description
+    </div>
+    <div>
+        <i class="fa-solid fa-person-walking-luggage"></i> @Model.Equipment
+    </div>
+    <div>
+        <i class="fa-solid fa-calendar-days"></i> @Model.Date.ToShortDateString()
+    </div>
+    <div>
+        @for (var cnt = 1; cnt <= 5; cnt++)
+        {
+            if (cnt <= @Model.Rating)
+            {
+                <div class="p-2 fa fa-star" style="color:rgb(212,175,55);padding:4px !important;"></div>
+            }
+            else
+            {
+                <div class="p-2 fa fa-star" style="color:darkgray; padding:4px !important;"></div>
+
+
+
+            }
+        }
+    </div>
+</div>
+<div>
+    <i class="bi bi-speedometer"></i> @Model.Difficulty / 10
+</div>
+<div>
+    <i class="fa-solid fa-lock"></i> @Model.Privacy
+</div>
+
+@if (Model.Photos.Count > 0)
+{
+    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            @for (var i = 0; i < Model.Photos.Count; i++)
+            {
+                if (i == 0)
+                {
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="@i" class="active" aria-current="true" aria-label="Slide @i"></button>
+                }
+                else
+                {
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="@i" aria-label="Slide @i"></button>
+                }
+            }
+
+        </div>
+        <div class="carousel-inner">
+            @for (var i = 0; i < Model.Photos.Count; i++)
+            {
+                @if (i == 0)
+                {
+                    <div class="carousel-item active">
+                        <img src="/@Model.Photos[i].Id/@Model.Photos[i].Name" class="d-block w-100" alt="...">
+                    </div>
+                }
+                else
+                {
+                    <div class="carousel-item">
+                        <img src="/@Model.Photos[i].Id/@Model.Photos[i].Name" class="d-block w-100" alt="...">
+                    </div>
+                }
+            }
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+}
+
+<div class="row" style="margin-top:30px;">
+    @for (var i = 0; i < Model.Attractions.Count - 1; i++)
+    {
+        <div class="col-4">
+            <div class="card" >
+            <div class="card-body">
+                <h5 class="card-title">
+                    <a asp-controller="Attraction" asp-action="GetAttractionInformation" asp-route-attractionId="@Model.Attractions[i].AttractionId"> @Model.Attractions[i].AttractionName</a>
+                    - 
+                    <a asp-controller="Attraction" asp-action="GetAttractionInformation" asp-route-attractionId="@Model.Attractions[i].AttractionId">@Model.Attractions[i+1].AttractionName</a>
+                </h5>
+                <p class="card-text"><i class="fa-regular fa-clock"></i> @Model.Attractions[i+1].Duration hours</p>
+                <p class="card-text"><i class="fa-solid fa-signs-post"></i> @Model.Attractions[i+1].MarkingName</p>
+            </div>
+        </div>
+        </div>
+        
+    }
+</div>

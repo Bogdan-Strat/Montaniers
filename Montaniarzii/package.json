@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "leaflet-simple-map-screenshoter": "^0.4.5"
+  }
+}

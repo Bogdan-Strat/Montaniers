@@ -1,0 +1,23 @@
+﻿@using Montaniarzii.Common.DTOs
+@using Montaniarzii.Entities.Entities
+@model List<GuidSelectListItemModel<Follow>>
+
+@{
+    ViewData["Title"] = "GetPeopleThatFollowYou";
+}
+
+<div>
+    <h2>Followed by</h2>
+</div>
+
+<div>
+    <ul>
+        @foreach (var person in Model)
+        {
+            var userId = @person.Id;
+            <li>
+                <a asp-controller="UserAccount" asp-action="GetProfilePage" asp-route-userId="@userId">@person.Name</a>
+            </li>
+        }
+    </ul>
+</div>

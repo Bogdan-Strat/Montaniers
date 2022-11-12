@@ -1,0 +1,235 @@
+﻿@{
+    ViewData["Title"] = "CreateTrip";
+}
+
+@using Montaniarzii.Common.DTOs
+@using Montaniarzii.Entities.Entities
+@using Montaniarzii.Entities.Enums
+@using Montaniarzii.BusinessLogic.Implementation.Trips.Models
+@inject Montaniarzii.Common.DTOs.CurrentUserDto CurrrentUser
+@model CreateTripModel
+@{
+    var postTypes = Enum.GetValues(typeof(PostTypes))
+          .Cast<PostTypes>()
+          .Select(element => new SelectListItem()
+                  {
+                      Value = ((byte)element).ToString(),
+                      Text = element.ToString()
+                  });
+
+    var privacyTypes = Enum.GetValues(typeof(PublicityTypes))
+          .Cast<PublicityTypes>()
+          .Select(element => new SelectListItem()
+                  {
+                      Value = ((byte)element).ToString(),
+                      Text = element.ToString()
+                  });
+
+    var ratingTypes = Enumerable.Range(1, 5)
+          .Select(element => new SelectListItem()
+                  {
+                      Value = ((byte)element).ToString(),
+                      Text = element.ToString()
+                  });
+
+    var difficultyTypes = Enumerable.Range(1, 10)
+          .Select(element => new SelectListItem()
+                  {
+                      Value = ((byte)element).ToString(),
+                      Text = element.ToString()
+                  });
+
+    var markingTypes = Enum.GetValues(typeof(PublicityTypes))
+          .Cast<PublicityTypes>()
+          .Select(element => new SelectListItem()
+                  {
+                      Value = ((byte)element).ToString(),
+                      Text = element.ToString()
+                  });
+
+    var attractionTypes = Enum.GetValues(typeof(AttractionTypes))
+          .Cast<AttractionTypes>()
+          .Select(element => new SelectListItem()
+                  {
+                      Value = ((byte)element).ToString(),
+                      Text = element.ToString()
+                  });
+}
+<h1>Create Trip</h1>
+
+<hr />
+<div>
+    <div>
+        You didn't find your attraction among us? Send it to us and we take care that next time you will see it.
+    </div>
+    <div>
+        <button type="button" class="btn btn-primary rounded-pill" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="mdo">Suggest Attraction</button>
+    </div>
+    
+</div>
+
+<div class="row">
+    <div @*class="col-md-4"*@>
+
+        @*<form enctype="multipart/form-data">*@
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group" id="Description">
+                    <label asp-for="Description" class="control-label"></label>
+                    <input asp-for="Description" class="form-control" id="description" />
+                    <span asp-validation-for="Description" class="text-danger create-error"></span>
+                </div>
+                <div class="form-group" id="TripDate">
+                    <label asp-for="TripDate" class="control-label">Date</label>
+                    <input asp-for="TripDate" class="form-control" id="date" />
+                    <span asp-validation-for="TripDate" class="text-danger create-error"></span>
+                </div>
+                <div class="form-group" id="RatingId">
+                    <label asp-for="RatingId" class="control-label">Rating</label>
+                    <select class="form-select" aria-label="Default select example" asp-for="TypePostId" class="form-control" id="rating" asp-items="@ratingTypes"></select>
+                </div>
+                <div class="form-group" id="DifficultyId">
+                    <label asp-for="DifficultyId" class="control-label">Difficulty</label>
+                    <select class="form-select" aria-label="Default select example" asp-for="TypePostId" class="form-control" id="difficulty" asp-items="@difficultyTypes"></select>
+                </div>
+                <div class="form-group" id="Equipment">
+                    <label asp-for="Equipment" class="control-label"></label>
+                    <input asp-for="Equipment" class="form-control" id="equipment" />
+                    <span asp-validation-for="Equipment" class="text-danger create-error"></span>
+                </div>
+                <div class="form-group" id="TypePostId">
+                    <label asp-for="TypePostId" class="control-label">Type Post</label>
+                    <select class="form-select" aria-label="Default select example" asp-for="TypePostId" class="form-control" id="typepost" asp-items="@postTypes">
+                        @*@foreach(var option in Model.TypePost)
+                        {
+                        <option value="@option">@option.ToString()</option>
+                        }*@
+                    </select>
+                </div>
+                <div class="form-group" id="PrivacyId">
+                    <label asp-for="PrivacyId" class="control-label">Privacy</label>
+                    <select class="form-select" aria-label="Default select example" asp-for="TypePostId" class="form-control" id="privacy" asp-items="@privacyTypes"></select>
+                </div>
+                <div id="invitations"></div>
+                <div class="form-group" id="FileName">
+                    <label @*asp-for="Photos"*@ class="control-label">Photos</label>
+                    <input @*asp-for="Photos"*@ class="form-control" id="photos" type="file" multiple />
+                    <span @*asp-validation-for="Photos"*@ class="text-danger create-error" id="span-photo"></span>
+                    <div id="photo-list">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group" id="Attractions[0].AttractionId" data-id="00000000-0000-0000-0000-000000000000">
+                    <label class="control-label">Start Point</label>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <select class="form-select" aria-label="Default select example" asp-for="TypePostId" class="form-control" asp-items="@attractionTypes"></select>
+                        </div>
+                        <input class="form-control" id="Attractions[0]" data-id="00000000-0000-0000-0000-000000000000" value="" />
+                    </div>
+
+                    <span class="text-danger create-error"></span>
+                    <div id="suggestions" style="width: 100%;
+    max-height: 300px;
+    overflow: auto;
+    top: 100%;
+    left: 0;
+    background: #fff;
+    box-shadow: 0 0.25rem 0.75rem rgb(0 0 0 / 15%);
+    border: 1px solid #dee2e6;">
+                    </div>
+                </div>
+                <div id="dynamic-sections">
+                    <div id="sections">
+                    </div>
+                    <div id="addbutton"></div>
+
+                </div>
+            </div>
+            <div class="form-group" style="margin-left:46%;">
+                <input type="button" value="Create" class="btn btn-success rounded-pill" id="post-button" />
+            </div>
+        </div>
+        @*</form>*@
+    </div>
+</div>
+
+@*
+    Modal
+*@
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @*<form>*@
+                <div class="mb-3" id="AttractionName">
+                    <label for="recipient-name" class="col-form-label">Attraction Name*</label>
+                    <input type="text" class="form-control" id="modal-attraction-name">
+                    <span id="error-attraction-name" class="text-danger modal-error"></span>
+                </div>
+                <div class="mb-3" id="Description">
+                    <label for="message-text" class="col-form-label">Description</label>
+                    <textarea class="form-control" id="modal-description"></textarea>
+                    <span id="error-description" class="text-danger modal-error"></span>
+                </div>
+                <div class="mb-3" id="TypeAttractionId">
+                    <label class="control-label">Type*</label>
+                    <select class="form-select" aria-label="Default select example" class="form-control" id="modal-attractionTypes" asp-items="@attractionTypes"></select>
+                    <span id="error-type-attraction" class="text-danger modal-error"></span>
+                </div>
+                <div class="mb-3" id="Latitude">
+                    <label for="recipient-name" class="col-form-label">Latitude</label>
+                    <input type="number" class="form-control" id="modal-latitude">
+                    <span id="error-latitude" class="text-danger modal-error"></span>
+                </div>
+                <div class="mb-3" id="Longitude">
+                    <label for="recipient-name" class="col-form-label">Longitude</label>
+                    <input type="number" class="form-control" id="modal-longitude">
+                    <span id="error-longitude" class="text-danger modal-error"></span>
+                </div>
+                <div class="mb-3" id="Location">
+                    <label for="recipient-name" class="col-form-label">Location</label>
+                    <textarea class="form-control" id="modal-location"></textarea>
+                    <span id="error-location" class="text-danger modal-error"></span>
+                </div>
+                <div class="mb-3" id="Height">
+                    <label for="recipient-name" class="col-form-label">Height (m)</label>
+                    <input type="text" class="form-control" id="modal-height">
+                    <span id="error-height" class="text-danger modal-error"></span>
+                </div>
+                <div class="mb-3" id="Mountains">
+                    <label for="recipient-name" class="col-form-label">Mountains</label>
+                    <input type="text" class="form-control" id="modal-mountains">
+                    <span id="error-mountains" class="text-danger modal-error"></span>
+                </div>
+                @*</form>*@
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary rounded-pill" data-bs-dismiss="modal" id="modal-close-button">Close</button>
+                <input type="button" value="Send" class="btn btn-success rounded-pill" id="modal-send-button" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+
+
+    }
+    <script>
+        window.currentUserId = "@CurrrentUser.Id";
+    </script>
+    <script type="module" src="~/js/Trip/CreateTrip.js">
+    </script>
+
+
+}
+

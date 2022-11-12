@@ -1,0 +1,46 @@
+﻿@using Montaniarzii.BusinessLogic.Implementation.Attractions.Models
+@model AllDetailsAttractionModel
+@{
+    ViewData["Title"] = "GetAttractionInformation";
+}
+
+
+<h4 class="text-primary">@Model.TypeAttraction @Model.Name</h4>
+
+<div>
+        @if (Model.Description == "")
+        {
+            <div style="padding-bottom:15px;">This attraction doesn't have a description yet.</div>
+        }
+        else {
+            <div style="padding-bottom:15px;">@Model.Description</div>
+        }
+            
+        <div><i class="fa-regular fa-compass"></i> @Math.Round(Model.Latitude,3)° N @Math.Round(Model.Longitude, 3)° W</div>
+        @if (Model.Location != null)
+        {
+            <div><i class="fa-solid fa-location-dot"></i> @Model.Location</div>
+        }
+        else
+        {
+            <div><i class="fa-solid fa-location-dot"></i> @Model.Name</div>
+        }
+
+        @if (@Model.Height != null)
+        {
+            <div><i class="fa-solid fa-person-hiking"></i> @Model.Height m</div>
+        }
+        else
+        {
+            <div>Height: Unknwon</div>
+        }
+
+        @if (@Model.Mountains != null)
+        {
+            <div><i class="fa-solid fa-mountain"></i> @Model.Mountains</div>
+        }
+        else
+        {
+            <div><i class="fa-solid fa-mountain"></i>: Unknown</div>
+        }
+</div>
