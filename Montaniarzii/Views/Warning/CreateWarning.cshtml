@@ -1,0 +1,39 @@
+﻿@using Montaniarzii.BusinessLogic.Implementation.Warnings.Models
+@model CreateWarningModel
+
+@{
+    ViewData["Title"] = "CreateWarning";
+}
+
+<h1>CreateWarning</h1>
+
+<h4>Warning</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateWarning" novalidate>
+            @*<div asp-validation-summary="ModelOnly" class="text-danger"></div>*@
+            <div class="form-group">
+                <label asp-for="WarningMessage" class="control-label"></label>
+                <input asp-for="WarningMessage" class="form-control" />
+                <span asp-validation-for="WarningMessage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EndDate" class="control-label"></label>
+                <input asp-for="EndDate" class="form-control" />
+                <span asp-validation-for="EndDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

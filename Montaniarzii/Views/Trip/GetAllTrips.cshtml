@@ -1,0 +1,57 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using Montaniarzii.BusinessLogic.Implementation.Trips.Models
+@inject Montaniarzii.Common.DTOs.CurrentUserDto CurrentUser
+@model List<TripXAttractionGetAllTripsModel>
+@{
+    ViewData["Title"] = "GetAllTrips";
+}
+@{
+    var username = "";
+    if(Model.Count > 0)
+    {
+        username = Model[0].UserNameCreator;
+    }
+}
+@*@if(CurrentUser.Id != Model[0].UserId)
+{
+    <p> ceva</p>
+}*@
+
+<h1><i class="fa-regular fa-circle-user"></i> Profile page @username</h1>
+<div id="follow-zone">
+    
+</div>
+<div>
+    <a asp-controller="Invitation" asp-action="GetAllPendingInvitations">Pending Invitations</a>
+</div>
+<div>
+<a asp-controller="Trip" asp-action="CreateTrip">Create a new Trip</a>
+</div>
+@foreach(var trip in Model){
+    <div>
+        <i class="fa-regular fa-user"></i>
+        <a asp-controller="trip" asp-action="getalltrips" asp-route-userid="@trip.UserId"> @trip.UserNameCreator</a> has created this trip
+        <a asp-controller="TripXAttractions" asp-action="GetTripInformation" asp-route-tripId="@trip.TripId">@trip.AttractionsName[0] - @trip.AttractionsName[1]</a>
+        <ul>
+            <li>Duration: @trip.Duration</li>
+            <li>Date: @trip.Date</li>
+        </ul>
+    </div>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+
+
+    }
+    <script>window.CurrentUserId = "@CurrentUser.Id"</script>
+    <script type="text/javascript" src="~/js/Trip/GetAllTrips.js">
+    </script>
+
+
+}
+
+

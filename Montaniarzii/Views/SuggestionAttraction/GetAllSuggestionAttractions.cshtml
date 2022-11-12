@@ -1,0 +1,217 @@
+﻿@using Montaniarzii.BusinessLogic.Implementation.SuggestionAttractions.Models
+@using Montaniarzii.Entities.Enums
+@model GetSuggestionsPagedModel
+@{
+    ViewData["Title"] = "GetAllSuggestionAttractions";
+}
+@{
+    int count = 1;
+    var attractionTypes = Enum.GetValues(typeof(AttractionTypes))
+          .Cast<AttractionTypes>()
+          .Select(element => new SelectListItem()
+                  {
+                      Value = ((byte)element).ToString(),
+                      Text = element.ToString()
+                  });
+
+    int pages;
+    if(Model.NumberOfSuggestions % 5 == 0)
+        pages= Model.NumberOfSuggestions / 5;
+    else
+        pages= Model.NumberOfSuggestions / 5 + 1;
+}
+
+
+@if (Model.NumberOfSuggestions > 0)
+{
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Username creator</th>
+                <th scope="col">CreateDate</th>
+                <th scope="col">Attraction Name</th>
+                <th scope="col">Status</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var suggestion in Model.ListOfSuggestions)
+            {
+                <tr>
+                    <th scope="row">@count</th>
+                    <td>@suggestion.Username</td>
+                    <td>@suggestion.CreateDate.ToShortDateString()</td>
+                    <td>@suggestion.AttractionName</td>
+                    @if (suggestion.IsApproved == null)
+                    {
+                        <td>In Pending</td>
+                    }
+                    else if (suggestion.IsApproved == false)
+                    {
+                        <td>Rejected</td>
+                    }
+                    else
+                    {
+                        <td>Approved</td>
+                    }
+
+                    <td>
+                        @if (suggestion.IsApproved != null)
+                        {
+                            <button type="button" disabled class="btn btn-primary rounded-pill see-details" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="mdo" data-suggestionAttractionId="@suggestion.SuggestionAttractionId">See details</button>
+                            <form asp-action="RejectSuggestion" asp-route-suggestionAttractionId="@suggestion.SuggestionAttractionId">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <div class="form-group">
+                                    <input type="submit" disabled value="Reject" class="btn btn-danger rounded-pill" />
+                                </div>
+                            </form>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-primary rounded-pill see-details" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="mdo" data-suggestionAttractionId="@suggestion.SuggestionAttractionId">See details</button>
+                            <form asp-action="RejectSuggestion" asp-route-suggestionAttractionId="@suggestion.SuggestionAttractionId">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <div class="form-group">
+                                    <input type="submit" value="Reject" class="btn btn-danger rounded-pill" />
+                                </div>
+                            </form>
+                        }
+
+
+                    </td>
+                </tr>
+                count++;
+            }
+        </tbody>
+    </table>
+}
+
+else
+{
+    <div>There are no warnings created</div>
+}
+
+@*
+        Modal
+    *@
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3" id="AttractionName">
+                    <label for="recipient-name" class="col-form-label">Attraction Name</label>
+                    <input type="text" class="form-control" id="modal-attraction-name">
+                    <span id="error-attraction-name" class="text-danger modal-error"></span>
+                </div>
+                <div class="mb-3" id="Description">
+                    <label for="message-text" class="col-form-label">Description</label>
+                    <textarea class="form-control" id="modal-description"></textarea>
+                    <span id="error-description" class="text-danger modal-error"></span>
+                </div>
+                <div class="mb-3" id="TypeAttractionId">
+                    <label class="control-label">Type</label>
+                    <select class="form-select" aria-label="Default select example" class="form-control" id="modal-attractionTypes" asp-items="@attractionTypes"></select>
+                    <span id="error-type-attraction" class="text-danger modal-error"></span>
+                </div>
+                <div class="mb-3" id="Latitude">
+                    <label for="recipient-name" class="col-form-label">Latitude</label>
+                    <input type="number" class="form-control" id="modal-latitude">
+                    <span id="error-latitude" class="text-danger modal-error"></span>
+                </div>
+                <div class="mb-3" id="Longitude">
+                    <label for="recipient-name" class="col-form-label">Longitude</label>
+                    <input type="number" class="form-control" id="modal-longitude">
+                    <span id="error-longitude" class="text-danger modal-error"></span>
+                </div>
+                <div class="mb-3" id="Location">
+                    <label for="recipient-name" class="col-form-label">Location</label>
+                    <textarea class="form-control" id="modal-location"></textarea>
+                    <span id="error-location" class="text-danger modal-error"></span>
+                </div>
+                <div class="mb-3" id="Height">
+                    <label for="recipient-name" class="col-form-label">Height</label>
+                    <input type="text" class="form-control" id="modal-height">
+                    <span id="error-height" class="text-danger modal-error"></span>
+                </div>
+                <div class="mb-3" id="Mountains">
+                    <label for="recipient-name" class="col-form-label">Mountains</label>
+                    <input type="text" class="form-control" id="modal-mountains">
+                    <span id="error-mountains" class="text-danger modal-error"></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary rounded-pill" data-bs-dismiss="modal" id="modal-close-button">Close</button>
+                <input type="button" value="Approve" class="btn btn-success rounded-pill" id="modal-approve-button" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="pages">
+    <div style="display:flex;">
+        @if (pages >= 6)
+        {
+            @if (Model.ActualPageNumber < 3)
+            {
+                <a class="page-link" asp-controller="SuggestionAttraction" asp-action="GetAllSuggestionAttractions" asp-route-pageNumber="1">1</a>
+                <a class="page-link" asp-controller="SuggestionAttraction" asp-action="GetAllSuggestionAttractions" asp-route-pageNumber="2">2</a>
+                <a class="page-link" asp-controller="SuggestionAttraction" asp-action="GetAllSuggestionAttractions" asp-route-pageNumber="3">3</a>
+                <div> ... </div>
+                <a class="page-link" asp-controller="SuggestionAttraction" asp-action="GetAllSuggestionAttractions" asp-route-pageNumber="@pages">@pages</a>
+            }
+            else if (Model.ActualPageNumber > pages - 2)
+            {
+                <a class="page-link" asp-controller="SuggestionAttraction" asp-action="GetAllSuggestionAttractions" asp-route-pageNumber="1">1</a>
+                <div> ... </div>
+                @for (var i = pages - 1; i <= pages; i++)
+                {
+                    <a class="page-link" asp-controller="SuggestionAttraction" asp-action="GetAllSuggestionAttractions" asp-route-pageNumber="@i">@i</a>
+                }
+            }
+            else
+            {
+                <a class="page-link" asp-controller="SuggestionAttraction" asp-action="GetAllSuggestionAttractions" asp-route-pageNumber="1">1</a>
+                <div> ... </div>
+                @for (var i = Model.ActualPageNumber - 1; i <= Model.ActualPageNumber + 1; i++)
+                {
+                    <a class="page-link" asp-controller="SuggestionAttraction" asp-action="GetAllSuggestionAttractions" asp-route-pageNumber="@i">@i</a>
+                }
+                <div> ... </div>
+                <a class="page-link" asp-controller="SuggestionAttraction" asp-action="GetAllSuggestionAttractions" asp-route-pageNumber="@pages">@pages</a>
+            }
+        }
+        else
+        {
+            @for(var i = 1; i <= pages; i++)
+            {
+                <a class="page-link" asp-controller="SuggestionAttraction" asp-action="GetAllSuggestionAttractions" asp-route-pageNumber="@i">@i</a>
+            }
+        }
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+
+
+    }
+    <script type="text/javascript" src="~/js/SuggestionAttraction/GetAllSuggestionAttractions.js">
+    </script>
+    <script>
+         window.pageNumber = 1;
+    </script>
+
+
+}
+
+
+

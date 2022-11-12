@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Montaniarzii.DataAccess\Montaniarzii.DataAccess.csproj" />
+    <ProjectReference Include="..\Montaniarzii.Entities\Montaniarzii.Entities.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="11.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Implementation\Attractions\Validation\" />
+    <Folder Include="Implementation\Follows\Validation\" />
+    <Folder Include="Implementation\Invitations\Mappings\" />
+    <Folder Include="Implementation\Invitations\Validation\" />
+    <Folder Include="Implementation\Likes\Models\" />
+    <Folder Include="Implementation\Likes\Mappings\" />
+    <Folder Include="Implementation\Likes\Validation\" />
+    <Folder Include="Implementation\TripsXAttractions\Validation\" />
+  </ItemGroup>
+
+</Project>

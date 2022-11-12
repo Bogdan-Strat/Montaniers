@@ -1,0 +1,31 @@
+﻿.welcome-image{
+    width: 100%;
+    height: auto;
+    z-index: -1;
+    position: absolute;
+    left: 0;
+    top: 0;
+
+}
+
+main{
+    box-shadow: none !important;
+}
+.home-body{
+    overflow-y: hidden;
+}
+
+footer{
+    display: none !important;
+}
+
+.buttons-welcome-message {
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/*nav{
+    display: none !important;
+}*/

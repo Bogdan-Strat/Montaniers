@@ -1,0 +1,170 @@
+﻿@using Montaniarzii.BusinessLogic.Implementation.Account.Models
+@inject Montaniarzii.Common.DTOs.CurrentUserDto CurrentUser
+@model UserProfileModel
+@{
+    ViewData["Title"] = "GetProfilePage";
+}
+
+<div class="d-flex flex-column align-items-center" style="position:relative;">
+    <div class="rounded-circle" style="background-image:url('/@Model.AvatarPhotoId/@Model.AvatarPhotoPath'); background-size:cover; width:250px; height:250px;overflow:hidden;">
+    </div>
+    <h4 style="padding-top:15px;"> @Model.Username</h4>
+
+
+
+
+
+
+    @if (CurrentUser.Id != Model.UserId)
+    {
+        <div id="follow-zone">
+            <button type="button" class="btn btn-primary rounded-pill" id="follow-button" data-bs-toggle="dropdown"></button>
+            <ul id="buttons-dropdown"></ul>
+        </div>
+    }
+    else
+    {
+        <div style="position: absolute; top:6px;right:6px;">
+            <a class="btn btn-primary rounded-pill" asp-controller="UserAccount" asp-action="EditUserProfileAsUser">Edit profile</a>
+        </div>
+        <div style="padding-bottom:25px;">
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary rounded-pill" style="margin-right:10px;" data-bs-toggle="modal" data-bs-target="#followingModal" id="following-people-button">
+                Following
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="followingModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Following</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" id="following-people">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary rounded-pill" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary rounded-pill" data-bs-toggle="modal" data-bs-target="#followedModal" id="followed-people-button">
+                Followed
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="followedModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Followed</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" id="followed-people">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary rounded-pill" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div id="upcoming-events">
+                    <h4>Upcoming events</h4>
+                </div>
+            </div>
+            <div class="col-6">
+                <div id="past-events">
+                    <h4>Past events</h4>
+                </div>
+            </div>
+
+
+        </div>
+
+
+    }
+</div>
+@if (CurrentUser.Id == Model.UserId)
+{
+    <h4>My trips</h4>
+    @foreach (var trip in Model.Trips)
+    {
+        <div class="my-trips-list-item">
+            <i class="fa-regular fa-user"></i>
+            <a asp-controller="UserAccount" asp-action="GetProfilePage" asp-route-userId="@trip.UserId"> @trip.UserNameCreator</a> has created this @trip.PostType.ToLower()
+            @if (trip.PostType == "SoloTrip       ")
+            {
+                <a asp-controller="TripXAttractions" asp-action="GetTripInformation" asp-route-tripId="@trip.TripId">@trip.AttractionsName[0] - @trip.AttractionsName[1]</a>
+            }
+            else
+            {
+                <a asp-controller="TripXAttractions" asp-action="GetEventInformation" asp-route-tripId="@trip.TripId">@trip.AttractionsName[0] - @trip.AttractionsName[1]</a>
+            }
+            <ul>
+                <li><i class="fa-regular fa-clock"></i> @trip.Duration hours</li>
+                <li><i class="fa-regular fa-calendar-days"></i> @trip.Date.ToShortDateString()</li>
+            </ul>
+            <div class="btn rounded-pill" style="display:flex; align-items:center;" data-tripid="@trip.TripId">
+                <i class="fa-regular fa-heart like-button" style="color:red;" data-tripid="@trip.TripId"></i> 
+                <div class="number-of-likes" style="margin-left:7px;">
+
+                </div>
+            </div>
+            <input type="button" value="Delete" class="deleteButton btn btn-danger rounded-pill" data-tripId="@trip.TripId" />
+        </div>
+    }
+}
+else
+{
+    @foreach (var trip in Model.Trips)
+    {
+        if (trip.privacy == "Public" || (trip.privacy == "Followers" && Model.statusRequest == true))
+        {
+            <div class="my-trips-list-item">
+                <i class="fa-regular fa-user"></i>
+                <a asp-controller="UserAccount" asp-action="GetProfilePage" asp-route-userId="@trip.UserId"> @trip.UserNameCreator</a> has created this @trip.PostType
+                @if (trip.PostType == "SoloTrip")
+                {
+                    <a asp-controller="TripXAttractions" asp-action="GetTripInformation" asp-route-tripId="@trip.TripId">@trip.AttractionsName[0] - @trip.AttractionsName[1]</a>
+                }
+                else
+                {
+                    <a asp-controller="TripXAttractions" asp-action="GetEventInformation" asp-route-tripId="@trip.TripId">@trip.AttractionsName[0] - @trip.AttractionsName[1]</a>
+                }
+                <ul>
+                    <li><i class="fa-regular fa-clock"></i> @trip.Duration hours</li>
+                    <li><i class="fa-regular fa-calendar-days"></i> @trip.Date.ToShortDateString()</li>
+                </ul>
+
+                <div class="btn rounded-pill" style="display:flex; align-items:center;" data-tripid="@trip.TripId">
+                    <i class="fa-regular fa-heart like-button" style="color:red;" data-tripid="@trip.TripId"></i>
+                    <div class="number-of-likes" style="margin-left:7px;">
+                    </div>
+                </div>
+            </div>
+        }
+    }
+}
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+
+
+    }
+    <script>
+        window.CurrentUserId = "@CurrentUser.Id";
+        window.ProfileUserId = "@Model.UserId";
+    </script>
+    <script type="text/javascript" src="~/js/UserAccount/GetProfilePage.js">
+    </script>
+
+
+}

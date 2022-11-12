@@ -1,0 +1,132 @@
+﻿@inject Montaniarzii.Common.DTOs.CurrentUserDto CurrentUser
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-16" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Montaniarzii</title>
+    @RenderSection("Styles", false)
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Montaniarzii.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Layout.css" />
+     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+   integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+   crossorigin=""/>
+   
+<link rel="stylesheet" href="https://unpkg.com/leaflet-trails@0.0.1/leaflet-trails.css">
+   
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://kit.fontawesome.com/cc2b905796.js" crossorigin="anonymous"></script>
+</head>
+<body class="home-body">
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                Montaniers
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+
+
+                        @if (CurrentUser.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Attraction" asp-action="GetAllAttractions">Attractions</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Trip" asp-action="GetAllTripsForAListOfUsers">Feed</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="TrainStation" asp-action="GetViewForSearchingClosestsTrainStations">Train Station</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="UserAccount" asp-action="GetManagePage">Manage</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Trip" asp-action="CreateTrip">
+                                    <i class="fa-solid fa-circle-plus"></i>Trip
+                                </a>
+                            </li>
+                            if (CurrentUser.Role == "Admin")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="UserAccount" asp-action="GetAllUsers">Users</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Warning" asp-action="GetWarningsAsAdmin">Warning</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="SuggestionAttraction" asp-action="GetAllSuggestionAttractions">Suggestion</a>
+                                </li>
+                            }
+
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            </li>
+                        }
+
+                    </ul>
+                </div>
+                @if (CurrentUser.IsAuthenticated)
+                {
+
+                    <div class="search-box">
+                        <div class="search-input">
+                            <input type="text" class="form-control rounded-pill" placeholder="Search users" id="search-community">
+
+                            <div id="suggestions-list">
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-primary rounded-pill" id="search-button">Search</button>
+                    </div>
+                }
+                <div>
+                    @if (CurrentUser.IsAuthenticated)
+                    {
+                        <div style="display:flex;">
+                        <button tabindex="0" type="button" class="btn btn-secondary" data-bs-container="body" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="bottom" data-bs-content="Bottom popover">
+                            <i class="bi bi-bell"></i>
+                        </button>
+                        <div class="rounded-circle" style="margin-left:75px; background-image:url('/@CurrentUser.PhotoId/@CurrentUser.PhotoPath'); background-size:cover; width:40px; height:40px;overflow:hidden;">
+                        </div>
+                        <a class="text-decoration-none" style="margin-top:8px;" asp-controller="UserAccount" asp-action="GetProfilePage" asp-route-userId="@CurrentUser.Id">@CurrentUser.Username</a>
+                        <a class="btn btn-primary rounded-pill" asp-controller="UserAccount" asp-action="Logout">Log out</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2022 - Montaniarzii - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+     <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js" integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="crossorigin=""></script>
+   <script src="https://unpkg.com/leaflet-trails@0.0.1/leaflet-trails.js"></script>
+   <script src="https://unpkg.com/leaflet-simple-map-screenshoter"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.4/html2canvas.min.js"></script>
+     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/Layout.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
